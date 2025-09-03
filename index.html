@@ -16,52 +16,43 @@
   <!-- Lucide -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- Firebase -->
-  <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyBRgHJx6QRSo4ObSR4v9ZNtku9mr7qmgAs",
-    authDomain: "soviettracker-72c3b.firebaseapp.com",
-    databaseURL: "https://soviettracker-72c3b-default-rtdb.firebaseio.com",
-    projectId: "soviettracker-72c3b",
-    storageBucket: "soviettracker-72c3b.firebasestorage.app",
-    messagingSenderId: "408658436998",
-    appId: "1:408658436998:web:0495741ac90cd60c1fc207",
-    measurementId: "G-VEZ1K6176L"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
+  <!-- Firebase v9 compat (para usar con window.firebase) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body class="bg-gray-50">
   <div id="root"></div>
 
-  <!-- Tu aplicación React -->
   <script type="text/babel">
-    const { db } = window;
-    const { collection, addDoc, onSnapshot, doc, updateDoc } = window;
+    // Inicializar Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyBRgHJx6QRSo4ObSR4v9ZNtku9mr7qmgAs",
+      authDomain: "soviettracker-72c3b.firebaseapp.com",
+      databaseURL: "https://soviettracker-72c3b-default-rtdb.firebaseio.com",
+      projectId: "soviettracker-72c3b",
+      storageBucket: "soviettracker-72c3b.appspot.com",
+      messagingSenderId: "408658436998",
+      appId: "1:408658436998:web:0495741ac90cd60c1fc207",
+      measurementId: "G-VEZ1K6176L"
+    };
+
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const comradesRef = db.collection("comrades");
 
     function SovietTrainingTracker() {
       const [comrades, setComrades] = React.useState([]);
       const [newComradeName, setNewComradeName] = React.useState('');
       const [showAddForm, setShowAddForm] = React.useState(false);
 
-      // cargar datos desde Firestore
+      // Cargar datos desde Firestore
       React.useEffect(() => {
-        const unsub = onSnapshot(collection(db, "comrades"), snapshot => {
-          const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-          setComrades(data);
+        const unsubscribe = comradesRef.onSnapshot(snapshot => {
+          const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          // Filtrar eliminados
+          setComrades(data.filter(c => !c.removed));
         });
-        return unsub;
+        return unsubscribe;
       }, []);
 
       const getRank = (count) => {
@@ -91,7 +82,7 @@
 
       const addComrade = async () => {
         if (newComradeName.trim()) {
-          await addDoc(collection(db, "comrades"), {
+          await comradesRef.add({
             name: newComradeName.trim().toLowerCase(),
             count: 0,
             lastTraining: null
@@ -102,23 +93,92 @@
       };
 
       const incrementCount = async (id, currentCount) => {
-        const docRef = doc(db, "comrades", id);
-        await updateDoc(docRef, { count: currentCount + 1, lastTraining: new Date().toLocaleDateString() });
+        const docRef = comradesRef.doc(id);
+        await docRef.update({ count: currentCount + 1, lastTraining: new Date().toLocaleDateString() });
       };
 
       const removeComrade = async (id) => {
-        const docRef = doc(db, "comrades", id);
-        await updateDoc(docRef, { removed: true }); // o usa deleteDoc(docRef)
+        const docRef = comradesRef.doc(id);
+        await docRef.update({ removed: true });
       };
 
-      const totalTrainings = comrades.reduce((s, c) => s + c.count, 0);
+      const totalTrainings = comrades.reduce((sum, c) => sum + c.count, 0);
       const averageTrainings = comrades.length > 0 ? (totalTrainings / comrades.length).toFixed(1) : 0;
       const yearProgress = totalTrainings > 0 ? Math.min((totalTrainings / (365 * comrades.length)) * 100, 100).toFixed(1) : 0;
 
       return (
         <div className="min-h-screen bg-gradient-to-br from-red-50 to-red-100 p-4 md:p-6">
           <div className="max-w-2xl mx-auto">
-            {/* ... Aquí va el mismo HTML que tenías para renderizar camaradas ... */}
+            {/* Header */}
+            <div className="text-center mb-8 relative">
+              <div className="mb-4 text-6xl">☭</div>
+              <h1 className="text-2xl md:text-3xl font-bold text-red-800 mb-2">Año Soviético Viking Box</h1>
+              <p className="text-red-600 text-sm mb-4">"El trabajo duro forja campeones"</p>
+              <div className="bg-red-600 text-white p-2 rounded text-sm">
+                Progreso del colectivo: {yearProgress}% hacia la meta anual
+              </div>
+            </div>
+
+            {/* Botón agregar camarada */}
+            {!showAddForm && (
+              <button onClick={() => setShowAddForm(true)}
+                className="w-full mb-6 p-4 bg-white border-2 border-dashed border-red-300 rounded-lg text-red-600">
+                Reclutar nuevo camarada
+              </button>
+            )}
+
+            {showAddForm && (
+              <div className="bg-white p-4 rounded-lg border-2 border-red-200 mb-6">
+                <h3 className="text-red-800 font-bold mb-3">Registro de nuevo camarada</h3>
+                <div className="flex gap-2">
+                  <input value={newComradeName} onChange={(e) => setNewComradeName(e.target.value)}
+                    placeholder="Nombre del camarada"
+                    className="flex-1 px-3 py-2 border-2 border-red-300 rounded text-sm" />
+                  <button onClick={addComrade} className="px-4 py-2 bg-red-600 text-white rounded">Alistar</button>
+                  <button onClick={() => { setShowAddForm(false); setNewComradeName(''); }}
+                    className="px-4 py-2 border-2 border-red-300 rounded">Cancelar</button>
+                </div>
+              </div>
+            )}
+
+            {/* Lista de camaradas */}
+            <div className="space-y-4">
+              {comrades.length === 0 ? (
+                <div className="text-center py-12 text-red-600">
+                  <div className="text-4xl mb-4">🏭</div>
+                  <p className="text-sm font-medium">El cuartel está vacío</p>
+                  <p className="text-xs">Recluta tu primer camarada</p>
+                </div>
+              ) : (
+                comrades.sort((a, b) => b.count - a.count).map((c, i) => (
+                  <div key={c.id}
+                    className={`bg-white p-4 rounded-lg border-2 ${
+                      i === 0 ? 'border-red-400 bg-red-50' : 'border-red-200'
+                    }`}>
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <span>{getRank(c.count).icon}</span>
+                          <h3 className="font-bold">{c.name}</h3>
+                          {i === 0 && <span>👑</span>}
+                        </div>
+                        <div className={`text-sm ${getRank(c.count).color}`}>{getRank(c.count).title}</div>
+                        <div className="text-sm text-gray-600">
+                          {c.count} entrenamientos {c.lastTraining && `(último: ${c.lastTraining})`}
+                        </div>
+                      </div>
+                      <div className="flex gap-2 items-center">
+                        <div className="text-2xl font-bold text-red-600">{c.count}</div>
+                        <button onClick={() => incrementCount(c.id, c.count)}
+                          className="h-12 w-12 bg-red-600 text-white rounded-full">+1</button>
+                        <button onClick={() => removeComrade(c.id)}
+                          className="text-gray-400 hover:text-red-500">×</button>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
       );
