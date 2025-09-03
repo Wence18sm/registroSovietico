@@ -95,7 +95,7 @@
         if (count >= 30) return { title: "Cabo responsable", icon: "📋", color: "text-green-700" };
         if (count >= 20) return { title: "Soldado experimentado", icon: "🌟", color: "text-green-600" };
         if (count >= 10) return { title: "Recluta prometedor", icon: "⭐", color: "text-green-500" };
-        return { title: "Nuevo camarada", icon: "👤", color: "text-gray-500" };
+        return { title: "Nuevo Vikingo", icon: "👤", color: "text-gray-500" };
       };
 
       // Función para obtener el siguiente rango y cuánto falta
@@ -166,7 +166,7 @@
 
       const totalTrainings = comrades.reduce((sum, c) => sum + c.count, 0);
       const averageTrainings = comrades.length > 0 ? (totalTrainings / comrades.length).toFixed(1) : 0;
-      const yearProgress = totalTrainings > 0 ? Math.min((totalTrainings / (365 * comrades.length)) * 100, 100).toFixed(1) : 0;
+      const yearProgress = totalTrainings > 0 ? Math.min((totalTrainings / (130 * comrades.length)) * 100, 100).toFixed(1) : 0;
 
       return (
         <div className="min-h-screen bg-gradient-to-br from-red-50 to-red-100 p-4 md:p-6">
@@ -181,7 +181,7 @@
                 "No es menos tonto el más listo, sino el que menos tonto es"
               </p>
               <div className="bg-red-600 text-white p-2 rounded text-sm">
-                Progreso del colectivo: {yearProgress}% hacia la meta anual
+                Progreso vikingo: {yearProgress}% hacia la meta anual (130 pp)
               </div>
             </div>
 
@@ -191,7 +191,7 @@
                 <div className="absolute top-0 right-0 w-8 h-8 bg-red-600 transform rotate-45 translate-x-4 -translate-y-4"></div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs text-red-600 uppercase tracking-wide font-bold">camaradas</p>
+                    <p className="text-xs text-red-600 uppercase tracking-wide font-bold">vikingos</p>
                     <p className="text-2xl font-bold text-gray-900">{comrades.length}</p>
                   </div>
                   <div className="h-6 w-6 text-red-600">👥</div>
@@ -202,7 +202,7 @@
                 <div className="absolute top-0 right-0 w-8 h-8 bg-red-600 transform rotate-45 translate-x-4 -translate-y-4"></div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs text-red-600 uppercase tracking-wide font-bold">Entrenamientos</p>
+                    <p className="text-xs text-red-600 uppercase tracking-wide font-bold">Entrenamientos totales</p>
                     <p className="text-2xl font-bold text-gray-900">{totalTrainings}</p>
                   </div>
                   <div className="h-6 w-6 text-red-600">📈</div>
@@ -213,7 +213,7 @@
                 <div className="absolute top-0 right-0 w-8 h-8 bg-red-600 transform rotate-45 translate-x-4 -translate-y-4"></div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs text-red-600 uppercase tracking-wide font-bold">Promedio</p>
+                    <p className="text-xs text-red-600 uppercase tracking-wide font-bold">Promedio por Vikingo</p>
                     <p className="text-2xl font-bold text-gray-900">{averageTrainings}</p>
                   </div>
                   <div className="h-6 w-6 text-red-600">🏅</div>
@@ -366,3 +366,4 @@
   </script>
 </body>
 </html>
+
