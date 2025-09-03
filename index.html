@@ -12,34 +12,47 @@
 
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Lucide -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-
-  <!-- Firebase v9 compat (para usar con window.firebase) -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body class="bg-gray-50">
   <div id="root"></div>
 
-  <script type="text/babel">
-    // Inicializar Firebase
+  <!-- Firebase v9 Modular SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+    import { 
+      getFirestore, 
+      collection, 
+      addDoc, 
+      updateDoc, 
+      doc, 
+      onSnapshot 
+    } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+    // Tu configuración de Firebase
     const firebaseConfig = {
-      apiKey: "AIzaSyBRgHJx6QRSo4ObSR4v9ZNtku9mr7qmgAs",
-      authDomain: "soviettracker-72c3b.firebaseapp.com",
-      databaseURL: "https://soviettracker-72c3b-default-rtdb.firebaseio.com",
-      projectId: "soviettracker-72c3b",
-      storageBucket: "soviettracker-72c3b.appspot.com",
-      messagingSenderId: "408658436998",
-      appId: "1:408658436998:web:0495741ac90cd60c1fc207",
-      measurementId: "G-VEZ1K6176L"
+      apiKey: "AIzaSyDRwMHPEmaHNf_YtiAcciP76F1D41qzNZQ",
+      authDomain: "trackersovietico.firebaseapp.com",
+      projectId: "trackersovietico",
+      storageBucket: "trackersovietico.firebasestorage.app",
+      messagingSenderId: "948696302821",
+      appId: "1:948696302821:web:5d5aae1d12d153eaf1800c",
+      measurementId: "G-FCP9ZW9NHC"
     };
 
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const comradesRef = db.collection("comrades");
+    // Inicializar Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
+    // Hacer Firebase disponible globalmente para React
+    window.firebaseDB = db;
+    window.firebaseCollection = collection;
+    window.firebaseAddDoc = addDoc;
+    window.firebaseUpdateDoc = updateDoc;
+    window.firebaseDoc = doc;
+    window.firebaseOnSnapshot = onSnapshot;
+  </script>
+
+  <script type="text/babel">
     function SovietTrainingTracker() {
       const [comrades, setComrades] = React.useState([]);
       const [newComradeName, setNewComradeName] = React.useState('');
@@ -47,7 +60,9 @@
 
       // Cargar datos desde Firestore
       React.useEffect(() => {
-        const unsubscribe = comradesRef.onSnapshot(snapshot => {
+        const comradesRef = window.firebaseCollection(window.firebaseDB, "comrades");
+        
+        const unsubscribe = window.firebaseOnSnapshot(comradesRef, (snapshot) => {
           const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
           // Filtrar eliminados y agregar detección de promociones
           const processedData = data.filter(c => !c.removed).map(comrade => {
@@ -62,6 +77,7 @@
           });
           setComrades(processedData);
         });
+        
         return unsubscribe;
       }, []);
 
@@ -92,29 +108,46 @@
 
       const addComrade = async () => {
         if (newComradeName.trim()) {
-          await comradesRef.add({
-            name: newComradeName.trim().toLowerCase(),
-            count: 0,
-            previousCount: 0,
-            lastTraining: null
-          });
-          setNewComradeName('');
-          setShowAddForm(false);
+          try {
+            const comradesRef = window.firebaseCollection(window.firebaseDB, "comrades");
+            await window.firebaseAddDoc(comradesRef, {
+              name: newComradeName.trim().toLowerCase(),
+              count: 0,
+              previousCount: 0,
+              lastTraining: null,
+              removed: false
+            });
+            setNewComradeName('');
+            setShowAddForm(false);
+          } catch (error) {
+            console.error("Error agregando camarada:", error);
+            alert("Error al agregar camarada. Revisa la consola.");
+          }
         }
       };
 
       const incrementCount = async (id, currentCount) => {
-        const docRef = comradesRef.doc(id);
-        await docRef.update({ 
-          previousCount: currentCount,
-          count: currentCount + 1, 
-          lastTraining: new Date().toLocaleDateString() 
-        });
+        try {
+          const docRef = window.firebaseDoc(window.firebaseDB, "comrades", id);
+          await window.firebaseUpdateDoc(docRef, { 
+            previousCount: currentCount,
+            count: currentCount + 1, 
+            lastTraining: new Date().toLocaleDateString() 
+          });
+        } catch (error) {
+          console.error("Error incrementando contador:", error);
+          alert("Error al incrementar contador. Revisa la consola.");
+        }
       };
 
       const removeComrade = async (id) => {
-        const docRef = comradesRef.doc(id);
-        await docRef.update({ removed: true });
+        try {
+          const docRef = window.firebaseDoc(window.firebaseDB, "comrades", id);
+          await window.firebaseUpdateDoc(docRef, { removed: true });
+        } catch (error) {
+          console.error("Error removiendo camarada:", error);
+          alert("Error al remover camarada. Revisa la consola.");
+        }
       };
 
       const totalTrainings = comrades.reduce((sum, c) => sum + c.count, 0);
@@ -312,12 +345,6 @@
 
     const root = ReactDOM.createRoot(document.getElementById("root"));
     root.render(<SovietTrainingTracker />);
-  </script>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      lucide.createIcons();
-    });
   </script>
 </body>
 </html>
