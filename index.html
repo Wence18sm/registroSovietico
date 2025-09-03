@@ -81,27 +81,41 @@
         return unsubscribe;
       }, []);
 
+      // Función getRank modificada para intervalos de 15
       const getRank = (count) => {
-        if (count >= 365) return { title: "héroe del trabajo", icon: "🏆", color: "text-yellow-600" };
-        if (count >= 300) return { title: "stakhanovista", icon: "⭐", color: "text-yellow-500" };
-        if (count >= 200) return { title: "veterano de hierro", icon: "🛡️", color: "text-red-600" };
-        if (count >= 100) return { title: "guardián rojo", icon: "🔥", color: "text-red-500" };
-        if (count >= 50) return { title: "soldado disciplinado", icon: "🎖️", color: "text-blue-600" };
-        if (count >= 25) return { title: "camarada activo", icon: "💪", color: "text-blue-500" };
-        if (count >= 10) return { title: "recluta prometedor", icon: "🌟", color: "text-green-600" };
-        return { title: "nuevo camarada", icon: "👤", color: "text-gray-500" };
+        if (count >= 130) return { title: "Héroe del trabajo", icon: "🏆", color: "text-yellow-600" };
+        if (count >= 120) return { title: "Comandante supremo", icon: "⭐", color: "text-yellow-500" };
+        if (count >= 110) return { title: "Mariscal de campo", icon: "🎖️", color: "text-purple-600" };
+        if (count >= 100) return { title: "General de división", icon: "🛡️", color: "text-red-700" };
+        if (count >= 90) return { title: "Coronel veterano", icon: "🔥", color: "text-red-600" };
+        if (count >= 80) return { title: "Mayor de hierro", icon: "⚔️", color: "text-red-500" };
+        if (count >= 60) return { title: "Capitán disciplinado", icon: "🎯", color: "text-blue-700" };
+        if (count >= 50) return { title: "Teniente activo", icon: "💪", color: "text-blue-600" };
+        if (count >= 40) return { title: "Sargento firme", icon: "🏅", color: "text-blue-500" };
+        if (count >= 30) return { title: "Cabo responsable", icon: "📋", color: "text-green-700" };
+        if (count >= 20) return { title: "Soldado experimentado", icon: "🌟", color: "text-green-600" };
+        if (count >= 10) return { title: "Recluta prometedor", icon: "⭐", color: "text-green-500" };
+        return { title: "Nuevo camarada", icon: "👤", color: "text-gray-500" };
+      };
+
+      // Función para obtener el siguiente rango y cuánto falta
+      const getNextRankInfo = (count) => {
+        const currentLevel = Math.floor(count / 10);
+        const nextThreshold = (currentLevel + 1) * 10;
+        const remaining = nextThreshold - count;
+        return { nextThreshold, remaining };
       };
 
       const getMotivationalPhrase = () => {
         const phrases = [
-          "¡la disciplina forja el carácter!",
-          "cada repetición es un paso hacia la grandeza",
-          "el sudor de hoy es la victoria de mañana",
-          "en la unión está la fuerza",
-          "¡por la gloria del colectivo!",
-          "la perseverancia vence a la resistencia",
-          "entrenar es servir a la patria",
-          "¡adelante, camarada!"
+          "¡La disciplina forja el carácter!",
+          "Cada repetición es un paso hacia la grandeza",
+          "El sudor de hoy es la victoria de mañana",
+          "En la unión está la fuerza",
+          "¡Por la gloria del colectivo!",
+          "La perseverancia vence a la resistencia",
+          "Entrenar es servir a la patria",
+          "¡Adelante, camarada!"
         ];
         return phrases[Math.floor(Math.random() * phrases.length)];
       };
@@ -161,13 +175,13 @@
             <div className="text-center mb-8 relative">
               <div className="mb-4 text-6xl">☭</div>
               <h1 className="text-2xl md:text-3xl font-bold text-red-800 mb-2">
-                año soviético de entrenamiento
+                VIKING BOX - AÑO SOVIÉTICO
               </h1>
               <p className="text-red-600 text-sm mb-4">
-                "el trabajo duro forja campeones" - plan quinquenal de resistencia
+                "No es menos tonto el más listo, sino el que menos tonto es"
               </p>
               <div className="bg-red-600 text-white p-2 rounded text-sm">
-                progreso del colectivo: {yearProgress}% hacia la meta anual
+                Progreso del colectivo: {yearProgress}% hacia la meta anual
               </div>
             </div>
 
@@ -188,7 +202,7 @@
                 <div className="absolute top-0 right-0 w-8 h-8 bg-red-600 transform rotate-45 translate-x-4 -translate-y-4"></div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs text-red-600 uppercase tracking-wide font-bold">entrenamientos</p>
+                    <p className="text-xs text-red-600 uppercase tracking-wide font-bold">Entrenamientos</p>
                     <p className="text-2xl font-bold text-gray-900">{totalTrainings}</p>
                   </div>
                   <div className="h-6 w-6 text-red-600">📈</div>
@@ -199,7 +213,7 @@
                 <div className="absolute top-0 right-0 w-8 h-8 bg-red-600 transform rotate-45 translate-x-4 -translate-y-4"></div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs text-red-600 uppercase tracking-wide font-bold">promedio</p>
+                    <p className="text-xs text-red-600 uppercase tracking-wide font-bold">Promedio</p>
                     <p className="text-2xl font-bold text-gray-900">{averageTrainings}</p>
                   </div>
                   <div className="h-6 w-6 text-red-600">🏅</div>
@@ -219,24 +233,24 @@
               <button onClick={() => setShowAddForm(true)}
                 className="w-full mb-6 p-4 bg-white border-2 border-dashed border-red-300 rounded-lg text-red-600 hover:border-red-400 hover:text-red-700 hover:bg-red-50 transition-colors flex items-center justify-center gap-2 font-medium">
                 <span className="text-xl">+</span>
-                reclutar nuevo camarada
+                Nuevo Vikingo
               </button>
             )}
 
             {/* Formulario mejorado */}
             {showAddForm && (
               <div className="bg-white p-4 rounded-lg border-2 border-red-200 mb-6">
-                <h3 className="text-red-800 font-bold mb-3">registro de nuevo camarada</h3>
+                <h3 className="text-red-800 font-bold mb-3">Registro de nuevo vikingo</h3>
                 <div className="flex flex-col sm:flex-row gap-2">
                   <input value={newComradeName} onChange={(e) => setNewComradeName(e.target.value)}
-                    placeholder="nombre del valiente camarada"
+                    placeholder="Nombre del Vikingo"
                     className="flex-1 px-3 py-2 border-2 border-red-300 rounded text-sm focus:outline-none focus:border-red-500"
                     onKeyPress={(e) => e.key === 'Enter' && addComrade()}
                     autoFocus />
                   <div className="flex gap-2">
-                    <button onClick={addComrade} className="px-4 py-2 bg-red-600 text-white rounded text-sm hover:bg-red-700 transition-colors font-medium">alistar</button>
+                    <button onClick={addComrade} className="px-4 py-2 bg-red-600 text-white rounded text-sm hover:bg-red-700 transition-colors font-medium">Agregar</button>
                     <button onClick={() => { setShowAddForm(false); setNewComradeName(''); }}
-                      className="px-4 py-2 border-2 border-red-300 rounded text-sm hover:bg-red-50 transition-colors">cancelar</button>
+                      className="px-4 py-2 border-2 border-red-300 rounded text-sm hover:bg-red-50 transition-colors">Cancelar</button>
                   </div>
                 </div>
               </div>
@@ -247,82 +261,86 @@
               {comrades.length === 0 ? (
                 <div className="text-center py-12 text-red-600">
                   <div className="text-4xl mb-4">🏭</div>
-                  <p className="text-sm font-medium">el cuartel está vacío</p>
-                  <p className="text-xs mt-1">recluta tu primer camarada para comenzar la revolución del fitness</p>
+                  <p className="text-sm font-medium">El cuartel está vacío</p>
+                  <p className="text-xs mt-1">recluta tu primer Vikingo para comenzar el año sovietico</p>
                 </div>
               ) : (
-                comrades.sort((a, b) => b.count - a.count).map((comrade, index) => (
-                  <div key={comrade.id}
-                    className={`bg-white p-4 rounded-lg border-2 transition-all duration-300 ${
-                      comrade.wasPromoted 
-                        ? 'border-yellow-400 bg-yellow-50 shadow-lg' 
-                        : index === 0 
-                          ? 'border-red-400 bg-red-50' 
-                          : 'border-red-200'
-                    }`}>
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-lg">{getRank(comrade.count).icon}</span>
-                          <h3 className="font-bold text-gray-900">{comrade.name}</h3>
-                          {index === 0 && <div className="text-yellow-500">👑</div>}
-                          {comrade.wasPromoted && (
-                            <div className="animate-pulse text-yellow-500">🎖️ ¡PROMOCIÓN!</div>
-                          )}
-                        </div>
-                        
-                        <div className={`text-sm font-medium mb-1 ${getRank(comrade.count).color}`}>
-                          {getRank(comrade.count).title}
-                        </div>
-                        
-                        <div className="flex items-center gap-4 text-sm text-gray-600">
-                          <span className="font-medium">
-                            {comrade.count} {comrade.count === 1 ? 'entrenamiento' : 'entrenamientos'}
-                          </span>
-                          {comrade.lastTraining && (
-                            <span className="text-xs">
-                              último: {comrade.lastTraining}
+                comrades.sort((a, b) => b.count - a.count).map((comrade, index) => {
+                  const nextRankInfo = getNextRankInfo(comrade.count);
+                  
+                  return (
+                    <div key={comrade.id}
+                      className={`bg-white p-4 rounded-lg border-2 transition-all duration-300 ${
+                        comrade.wasPromoted 
+                          ? 'border-yellow-400 bg-yellow-50 shadow-lg' 
+                          : index === 0 
+                            ? 'border-red-400 bg-red-50' 
+                            : 'border-red-200'
+                      }`}>
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-lg">{getRank(comrade.count).icon}</span>
+                            <h3 className="font-bold text-gray-900">{comrade.name}</h3>
+                            {index === 0 && <div className="text-yellow-500">👑</div>}
+                            {comrade.wasPromoted && (
+                              <div className="animate-pulse text-yellow-500">🎖️ ¡PROMOCIÓN!</div>
+                            )}
+                          </div>
+                          
+                          <div className={`text-sm font-medium mb-1 ${getRank(comrade.count).color}`}>
+                            {getRank(comrade.count).title}
+                          </div>
+                          
+                          <div className="flex items-center gap-4 text-sm text-gray-600">
+                            <span className="font-medium">
+                              {comrade.count} {comrade.count === 1 ? 'entrenamiento' : 'entrenamientos'}
                             </span>
-                          )}
-                        </div>
+                            {comrade.lastTraining && (
+                              <span className="text-xs">
+                                último: {comrade.lastTraining}
+                              </span>
+                            )}
+                          </div>
 
-                        {/* Barra de progreso hacia siguiente rango */}
-                        <div className="mt-2">
-                          <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div 
-                              className="bg-red-600 h-2 rounded-full transition-all duration-300"
-                              style={{
-                                width: `${Math.min((comrade.count % 25) / 25 * 100, 100)}%`
-                              }}
-                            ></div>
-                          </div>
-                          <div className="text-xs text-gray-500 mt-1">
-                            {25 - (comrade.count % 25)} entrenamientos para siguiente rango
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-3">
-                        <div className="text-right">
-                          <div className="text-3xl font-bold text-red-600">
-                            {comrade.count}
+                          {/* Barra de progreso hacia siguiente rango (intervalos de 10) */}
+                          <div className="mt-2">
+                            <div className="w-full bg-gray-200 rounded-full h-2">
+                              <div 
+                                className="bg-red-600 h-2 rounded-full transition-all duration-300"
+                                style={{
+                                  width: `${((comrade.count % 10) / 10) * 100}%`
+                                }}
+                              ></div>
+                            </div>
+                            <div className="text-xs text-gray-500 mt-1">
+                              {nextRankInfo.remaining} Entrenamientos para siguiente rango
+                            </div>
                           </div>
                         </div>
                         
-                        <button onClick={() => incrementCount(comrade.id, comrade.count)}
-                          className="h-16 w-16 bg-red-600 text-white rounded-full flex items-center justify-center hover:bg-red-700 transition-all duration-200 text-xl font-bold shadow-lg hover:shadow-xl transform hover:scale-105">
-                          +1
-                        </button>
-                        
-                        <button onClick={() => removeComrade(comrade.id)}
-                          className="ml-2 text-gray-400 hover:text-red-500 transition-colors text-lg"
-                          title="dar de baja">
-                          ×
-                        </button>
+                        <div className="flex items-center gap-3">
+                          <div className="text-right">
+                            <div className="text-3xl font-bold text-red-600">
+                              {comrade.count}
+                            </div>
+                          </div>
+                          
+                          <button onClick={() => incrementCount(comrade.id, comrade.count)}
+                            className="h-16 w-16 bg-red-600 text-white rounded-full flex items-center justify-center hover:bg-red-700 transition-all duration-200 text-xl font-bold shadow-lg hover:shadow-xl transform hover:scale-105">
+                            +1
+                          </button>
+                          
+                          <button onClick={() => removeComrade(comrade.id)}
+                            className="ml-2 text-gray-400 hover:text-red-500 transition-colors text-lg"
+                            title="dar de baja">
+                            ×
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
 
@@ -331,10 +349,10 @@
               <div className="text-center mt-12 pt-8 border-t-2 border-red-200">
                 <div className="text-2xl mb-2">⚡</div>
                 <p className="text-sm text-red-600 font-medium">
-                  "la disciplina es la madre de la victoria"
+                  "La disciplina es la madre de la victoria"
                 </p>
                 <p className="text-xs text-gray-500 mt-1">
-                  año soviético en progreso · ¡gloria al trabajo duro!
+                  Año soviético en progreso · ¡Gloria al trabajo duro!
                 </p>
               </div>
             )}
