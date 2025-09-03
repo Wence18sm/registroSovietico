@@ -38,7 +38,7 @@
 
     const app = firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-    const comradesRef = collection(db,"comrades");
+    const comradesRef = db.collection("comrades");
 
     function SovietTrainingTracker() {
       const [comrades, setComrades] = React.useState([]);
