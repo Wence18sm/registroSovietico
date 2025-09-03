@@ -155,6 +155,23 @@
         }
       };
 
+      const decrementCount = async (id, currentCount) => {
+        if (currentCount > 0) { // evita valores negativos
+          try {
+            const docRef = window.firebaseDoc(window.firebaseDB, "comrades", id);
+            await window.firebaseUpdateDoc(docRef, { 
+              previousCount: currentCount,
+              count: currentCount - 1, 
+              lastTraining: new Date().toLocaleDateString() 
+            });
+          } catch (error) {
+            console.error("Error decrementando contador:", error);
+            alert("Error al decrementar contador. Revisa la consola.");
+          }
+        }
+      };
+
+
       const removeComrade = async (id) => {
         try {
           const docRef = window.firebaseDoc(window.firebaseDB, "comrades", id);
@@ -321,17 +338,31 @@
                         </div>
                         
                         <div className="flex items-center gap-3">
+                          {/* contador */}
                           <div className="text-right">
                             <div className="text-3xl font-bold text-red-600">
                               {comrade.count}
                             </div>
                           </div>
-                          
-                          <button onClick={() => incrementCount(comrade.id, comrade.count)}
-                            className="h-16 w-16 bg-red-600 text-white rounded-full flex items-center justify-center hover:bg-red-700 transition-all duration-200 text-xl font-bold shadow-lg hover:shadow-xl transform hover:scale-105">
-                            +1
-                          </button>
-                          
+                        
+                          {/* Botones en vertical */}
+                          <div className="flex flex-col gap-2">
+                            <button onClick={() => incrementCount(comrade.id, comrade.count)}
+                              className="h-12 w-12 bg-red-600 text-white rounded-full flex items-center justify-center 
+                                         hover:bg-red-700 transition-all duration-200 text-lg font-bold shadow-lg 
+                                         hover:shadow-xl transform hover:scale-105">
+                              +1
+                            </button>
+                        
+                            <button onClick={() => decrementCount(comrade.id, comrade.count)}
+                              className="h-12 w-12 bg-gray-400 text-white rounded-full flex items-center justify-center 
+                                         hover:bg-gray-500 transition-all duration-200 text-lg font-bold shadow-lg 
+                                         hover:shadow-xl transform hover:scale-105">
+                              -1
+                            </button>
+                          </div>
+                        
+                          {/* botón eliminar */}
                           <button onClick={() => removeComrade(comrade.id)}
                             className="ml-2 text-gray-400 hover:text-red-500 transition-colors text-lg"
                             title="dar de baja">
@@ -367,5 +398,6 @@
   </script>
 </body>
 </html>
+
 
 
