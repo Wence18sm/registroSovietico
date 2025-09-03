@@ -83,20 +83,21 @@
 
       // Función getRank modificada para intervalos de 15
       const getRank = (count) => {
-        if (count >= 130) return { title: "Héroe del trabajo", icon: "🏆", color: "text-yellow-600" };
-        if (count >= 120) return { title: "Comandante supremo", icon: "⭐", color: "text-yellow-500" };
-        if (count >= 110) return { title: "Mariscal de campo", icon: "🎖️", color: "text-purple-600" };
-        if (count >= 100) return { title: "General de división", icon: "🛡️", color: "text-red-700" };
-        if (count >= 90) return { title: "Coronel veterano", icon: "🔥", color: "text-red-600" };
-        if (count >= 80) return { title: "Mayor de hierro", icon: "⚔️", color: "text-red-500" };
-        if (count >= 60) return { title: "Capitán disciplinado", icon: "🎯", color: "text-blue-700" };
-        if (count >= 50) return { title: "Teniente activo", icon: "💪", color: "text-blue-600" };
-        if (count >= 40) return { title: "Sargento firme", icon: "🏅", color: "text-blue-500" };
-        if (count >= 30) return { title: "Cabo responsable", icon: "📋", color: "text-green-700" };
-        if (count >= 20) return { title: "Soldado experimentado", icon: "🌟", color: "text-green-600" };
-        if (count >= 10) return { title: "Recluta prometedor", icon: "⭐", color: "text-green-500" };
-        return { title: "Nuevo Vikingo", icon: "👤", color: "text-gray-500" };
+        if (count >= 130) return { title: "Héroe de la Madre Patria", icon: "🚩", color: "text-yellow-600" };
+        if (count >= 120) return { title: "Guardián Rojo", icon: "🛡️", color: "text-yellow-500" };
+        if (count >= 110) return { title: "Titán del Proletariado", icon: "⚒️", color: "text-purple-600" };
+        if (count >= 100) return { title: "Centinela de Acero", icon: "🪖", color: "text-red-700" };
+        if (count >= 90) return { title: "Martillo del Pueblo", icon: "🔨", color: "text-red-600" };
+        if (count >= 80) return { title: "Escudo de la Revolución", icon: "🛡️", color: "text-red-500" };
+        if (count >= 60) return { title: "Comandante del Ejército Rojo", icon: "⭐", color: "text-blue-700" };
+        if (count >= 50) return { title: "Luchador del Pueblo", icon: "💪", color: "text-blue-600" };
+        if (count >= 40) return { title: "Soldado de Hierro", icon: "⚔️", color: "text-blue-500" };
+        if (count >= 30) return { title: "Plebeyo Valiente", icon: "🔥", color: "text-green-700" };
+        if (count >= 20) return { title: "Obrero Disciplinado", icon: "🛠️", color: "text-green-600" };
+        if (count >= 10) return { title: "Recluta Rojo", icon: "⭐", color: "text-green-500" };
+        return { title: "Nuevo vikingo", icon: "👤", color: "text-gray-500" };
       };
+
 
       // Función para obtener el siguiente rango y cuánto falta
       const getNextRankInfo = (count) => {
@@ -366,4 +367,5 @@
   </script>
 </body>
 </html>
+
 
